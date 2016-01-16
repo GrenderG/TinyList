@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:card_view="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/card_view_archived_lists"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginBottom="3dp"
+    android:layout_marginEnd="6dp"
+    android:layout_marginStart="6dp"
+    android:layout_marginTop="3dp"
+    card_view:cardCornerRadius="2dp">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:padding="6dp">
+
+        <TextView
+            android:id="@+id/task_archived_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <LinearLayout
+            android:id="@+id/task_archived_container"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_archived_list_title"
+            android:orientation="vertical"
+            android:paddingBottom="6dp"
+            android:paddingTop="6dp" />
+
+        <View
+            style="@style/Divider"
+            android:layout_below="@id/task_archived_container" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/task_archived_container"
+            android:padding="12dp">
+
+            <TextView
+                android:id="@+id/task_archived_list_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentStart="true"
+                android:layout_centerVertical="true"
+                android:textStyle="italic" />
+
+            <ImageView
+                android:id="@+id/unarchive"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/drawable_unarchive_item"
+                android:clickable="true"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true"/>
+
+            <ImageView
+                android:id="@+id/delete"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@drawable/drawable_delete_item"
+                android:clickable="true"
+                android:paddingTop="2dp"
+                android:paddingBottom="2dp"
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_centerVertical="true"
+                android:layout_toStartOf="@id/unarchive"/>
+
+        </RelativeLayout>
+    </RelativeLayout>
+
+</android.support.v7.widget.CardView>

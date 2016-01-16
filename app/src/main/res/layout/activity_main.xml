@@ -19,10 +19,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="?attr/colorPrimary"
-            app:layout_scrollFlags="enterAlways"
-            app:popupTheme="@style/AppTheme.PopupOverlay">
-
-        </android.support.v7.widget.Toolbar>
+            app:layout_scrollFlags="scroll|enterAlways"
+            app:popupTheme="@style/AppTheme.PopupOverlay" />
 
         <android.support.design.widget.TabLayout
             android:id="@+id/tabs"
@@ -43,6 +41,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="end|bottom"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@drawable/ic_add_shopping_cart_white_48dp" />
+        android:src="@drawable/ic_playlist_add_white_48dp"
+        app:layout_behavior="es.dmoral.tinylist.widgets.FABScrollBehavior"/>
 
 </android.support.design.widget.CoordinatorLayout>

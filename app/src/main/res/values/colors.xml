@@ -8,4 +8,7 @@
     <color name="secondary_text">#727272</color>
     <color name="icons">#FFFFFF</color>
     <color name="divider">#B6B6B6</color>
+    <color name="accent_dark">#D84315</color>
+    <color name="common_dialog_button_color">#009688</color>
+
 </resources>

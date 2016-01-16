@@ -6,11 +6,15 @@
         <item name="colorPrimary">@color/primary</item>
         <item name="colorPrimaryDark">@color/primary_dark</item>
         <item name="colorAccent">@color/accent</item>
+        <item name="android:actionModeBackground">@color/primary_dark</item>
     </style>
 
     <style name="AppTheme.NoActionBar">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
+    </style>
+
+    <style name="AppTheme.WithActionBar">
     </style>
 
     <style name="AppTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar" />
@@ -19,6 +23,12 @@
 
     <style name="AppTheme.MaterialColdStart">
         <item name="android:windowBackground">@drawable/window_background_statusbar_toolbar_tab</item>
+    </style>
+
+    <style name="Divider">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">1dp</item>
+        <item name="android:background">?android:attr/listDivider</item>
     </style>
 
 </resources>

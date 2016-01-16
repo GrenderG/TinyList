@@ -1,4 +1,20 @@
 <resources>
     <string name="app_name">TinyList</string>
-    <string name="action_settings">Settings</string>
+    <string name="saved_lists">SAVED LISTS</string>
+    <string name="archived_lists">ARCHIVED LISTS</string>
+    <string name="done">Done</string>
+    <string name="change_background">Change background</string>
+    <string name="accept">ACCEPT</string>
+    <string name="cancel">CANCEL</string>
+    <string name="choose_color">Choose a color</string>
+    <string name="list_title">List title</string>
+    <string name="new_shopping_list">New list</string>
+    <string name="item_description">Item description</string>
+    <string name="add_item">Add item</string>
+    <string name="archive">Archive</string>
+    <string name="about">About</string>
+    <string name="app_version">v.1.0.0</string>
+    <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (http://github.com/GrenderG)</string>
+    <string name="list_archived">List archived</string>
+    <string name="undo">UNDO</string>
 </resources>

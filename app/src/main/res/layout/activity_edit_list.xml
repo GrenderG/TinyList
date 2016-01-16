@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    android:orientation="vertical"
+    tools:context="es.dmoral.tinylist.activities.EditListActivity">
+
+    <LinearLayout
+        android:id="@+id/main_container"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_margin="@dimen/common_app_margin"
+        android:orientation="vertical">
+
+        <EditText
+            android:id="@+id/et_task_list_title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/list_title"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/list_item_recyclerview"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:scrollbars="vertical" />
+
+        <Button
+            android:id="@+id/add_item"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom"
+            android:background="@drawable/add_item_bg"
+            android:padding="6dp"
+            android:text="@string/add_item"
+            android:textColor="@android:color/white" />
+    </LinearLayout>
+
+</LinearLayout>

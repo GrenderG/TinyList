@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="horizontal" android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <CheckBox
+        android:id="@+id/cb_item"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_app_margin"/>
+
+    <EditText
+        android:id="@+id/item_desc"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:padding="@dimen/common_app_margin"
+        android:singleLine="true"
+        android:layout_weight="1"
+        android:hint="@string/item_description"/>
+
+</LinearLayout>

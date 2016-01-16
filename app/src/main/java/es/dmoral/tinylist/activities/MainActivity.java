@@ -1,8 +1,10 @@
 package es.dmoral.tinylist.activities;
 
+import android.content.Intent;
+import android.support.design.widget.AppBarLayout;
 import android.support.design.widget.TabLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 
@@ -11,33 +13,23 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 
-import android.widget.TextView;
-
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
+import es.dmoral.tinylist.fragments.ArchivedListsFragment;
 import es.dmoral.tinylist.fragments.SavedListsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
-    /**
-     * The {@link android.support.v4.view.PagerAdapter} that will provide
-     * fragments for each of the sections. We use a
-     * {@link FragmentPagerAdapter} derivative, which will keep every
-     * loaded fragment in memory. If this becomes too memory intensive, it
-     * may be best to switch to a
-     * {@link android.support.v4.app.FragmentStatePagerAdapter}.
-     */
-    private SectionsPagerAdapter mSectionsPagerAdapter;
-
-    /**
-     * The {@link ViewPager} that will host the section contents.
-     */
-    private ViewPager mViewPager;
+    @Bind(R.id.container) ViewPager mViewPager;
+    @Bind(R.id.fab) FloatingActionButton fab;
+    @Bind(R.id.toolbar) Toolbar toolbar;
+    @Bind(R.id.tabs) TabLayout tabLayout;
+    @Bind(R.id.appbar) AppBarLayout appBarLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,30 +39,50 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        // Create the adapter that will return a fragment for each of the three
-        // primary sections of the activity.
-        mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-
-        // Set up the ViewPager with the sections adapter.
-        mViewPager = (ViewPager) findViewById(R.id.container);
-        mViewPager.setAdapter(mSectionsPagerAdapter);
-
-        TabLayout tabLayout = (TabLayout) findViewById(R.id.tabs);
-        tabLayout.setupWithViewPager(mViewPager);
-
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
-            }
-        });
+        setupView();
+        setListeners();
 
     }
 
+    private void setupView() {
+        ButterKnife.bind(this);
+        setSupportActionBar(toolbar);
+
+        mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
+
+        tabLayout.setupWithViewPager(mViewPager);
+
+    }
+
+    private void setListeners() {
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, EditListActivity.class);
+                startActivity(intent);
+            }
+        });
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                appBarLayout.setExpanded(true, true);
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state != ViewPager.SCROLL_STATE_IDLE) {
+                    SavedListsFragment.getInstance().redrawItems();
+                    ArchivedListsFragment.getInstance().redrawItems();
+                    fab.show();
+                }
+            }
+        });
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -86,12 +98,21 @@ public class MainActivity extends AppCompatActivity {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
+        switch (id) {
+            case R.id.action_about:
+                showAboutDialog();
+                break;
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showAboutDialog() {
+        new AlertDialog.Builder(this)
+                .setPositiveButton(R.string.accept, null)
+                .setTitle(getString(R.string.app_name) + " " + getString(R.string.app_version))
+                .setMessage(getString(R.string.about_msg))
+                .create().show();
     }
 
     /**
@@ -108,12 +129,20 @@ public class MainActivity extends AppCompatActivity {
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            return SavedListsFragment.newInstance();
+            switch (position){
+                case 0:
+                    return SavedListsFragment.getInstance();
+                case 1:
+                    return ArchivedListsFragment.getInstance();
+                default:
+                    return new Fragment();
+            }
+
         }
 
         @Override
         public int getCount() {
-            // Show 2 total pages (Current lists and Archived lists).
+            // Show 2 total pages (Saved lists and Archived lists).
             return 2;
         }
 
@@ -121,9 +150,9 @@ public class MainActivity extends AppCompatActivity {
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return "SAVED LISTS";
+                    return getString(R.string.saved_lists);
                 case 1:
-                    return "ARCHIVED LISTS";
+                    return getString(R.string.archived_lists);
             }
             return null;
         }
