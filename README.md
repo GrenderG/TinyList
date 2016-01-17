@@ -1,9 +1,9 @@
 # TinyList
 <img src="./art/512icon.png" width="128px" height="128px"/>
-Just a tiny list app.
+<p>Just a tiny list app.</p>
 
 # Images
-![Image 1](./art/device-2016-01-17-160529.png =35%)
-![Image 2](./art/device-2016-01-17-160641.png =35%)
-![Image 3](./art/device-2016-01-17-160659.png =35%)
+<img src="./art/device-2016-01-17-160529.png" width="252px" height="448"/>
+<img src="./art/device-2016-01-17-160641.png" width="252px" height="448"/>
+<img src="./art/device-2016-01-17-160659.png" width="252px" height="448"/>
 
