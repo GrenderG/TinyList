@@ -1,22 +1,16 @@
 package es.dmoral.tinylist.adapters;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.Paint;
-import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
+import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
-import android.util.TypedValue;
-import android.view.ActionMode;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -28,7 +22,6 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
 import es.dmoral.tinylist.activities.EditListActivity;
-import es.dmoral.tinylist.activities.MainActivity;
 import es.dmoral.tinylist.fragments.SavedListsFragment;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.Task;
@@ -41,8 +34,9 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
 
     private final ArrayList<TaskList> taskLists;
     private final Context context;
-    private ActionMode actionMode;
+    @SuppressLint("SimpleDateFormat")
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    /* Cached item to restore (if user wants to), used when an item is removed. */
     private TaskList cachedItem;
 
     public SavedListsAdapter(ArrayList<TaskList> taskLists, Context context) {
@@ -66,8 +60,10 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
             TextView taskDescription = new TextView(context);
             taskDescription.setText(task.getTask());
             taskDescription.setTextSize(18f);
-            if (task.isChecked())
+            if (task.isChecked()) {
                 taskDescription.setPaintFlags(taskDescription.getPaintFlags() | Paint.STRIKE_THRU_TEXT_FLAG);
+                taskDescription.setAlpha(0.3f);
+            }
             holder.taskContainer.addView(taskDescription);
         }
         holder.taskListDate.setText(dateFormat.format(taskLists.get(position).getCreationDate()));
@@ -96,16 +92,12 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
         return this.taskLists.size();
     }
 
-    public void addItem(TaskList taskList) {
-        this.taskLists.add(taskList);
-        notifyItemInserted(taskLists.size() - 1);
-    }
-
-    public void addItem(TaskList taskList, int position) {
-        this.taskLists.add(position, taskList);
-        notifyItemInserted(position);
-    }
-
+    /**
+     * This method removes an item and notifies their removal and notifies the change of
+     * the views below the removed item.
+     *
+     * @param position position of the item to remove
+     */
     public void removeItem(int position) {
         this.cachedItem = this.taskLists.get(position);
         this.taskLists.remove(position);
@@ -113,18 +105,43 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
         notifyItemRangeChanged(position, getItemCount() - position);
     }
 
+    /**
+     * Replaces all items with new ones.
+     *
+     * @param newTaskLists items to replace.
+     */
     public void replaceWith(ArrayList<TaskList> newTaskLists) {
         this.taskLists.clear();
         this.taskLists.addAll(newTaskLists);
         notifyDataSetChanged();
     }
 
+    /**
+     * Get item at the desired position.
+     *
+     * @param position desired position
+     * @return item at the desired position.
+     */
     public TaskList getItem(int position) {
         return this.taskLists.get(position);
     }
 
+    /**
+     * This method returns the cached item (see its description to know more)
+     *
+     * @return cached item.
+     */
     public TaskList getCachedItem() {
         return this.cachedItem;
+    }
+
+    /**
+     * Sets the cached item (see its description to know more)
+     *
+     * @param item cached item.
+     */
+    public void setCachedItem(TaskList item) {
+        this.cachedItem = item;
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {

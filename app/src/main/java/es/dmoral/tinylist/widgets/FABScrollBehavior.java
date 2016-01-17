@@ -7,13 +7,24 @@ import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.view.View;
 
+import es.dmoral.tinylist.fragments.SavedListsFragment;
+
 /**
  * Created by grend on 16/01/2016.
+ *
+ * This class is used to give a custom behaviour to the Floating Action Button.
+ * (Hide when scrolling down and show when scrolling up)
  */
 public class FABScrollBehavior extends FloatingActionButton.Behavior {
 
+    private static boolean canHideChild = true;
+
     public FABScrollBehavior(Context context, AttributeSet attributeSet) {
         super();
+    }
+
+    public static void setCanHideChild(boolean canHideChild) {
+        FABScrollBehavior.canHideChild = canHideChild;
     }
 
     @Override
@@ -24,9 +35,10 @@ public class FABScrollBehavior extends FloatingActionButton.Behavior {
     @Override
     public void onNestedScroll(CoordinatorLayout coordinatorLayout, FloatingActionButton child, View target, int dxConsumed, int dyConsumed, int dxUnconsumed, int dyUnconsumed) {
         super.onNestedScroll(coordinatorLayout, child, target, dxConsumed, dyConsumed, dxUnconsumed, dyUnconsumed);
-        if(dyConsumed > 0 && child.getVisibility() == View.VISIBLE){
-            child.hide();
-        } else if(dyConsumed < 0 && child.getVisibility() == View.GONE){
+        if((dyConsumed > 0  || dyUnconsumed > 0) && child.getVisibility() == View.VISIBLE){
+            if (FABScrollBehavior.canHideChild)
+                child.hide();
+        } else if((dyConsumed < 0  || dyUnconsumed < 0) && child.getVisibility() == View.GONE){
             child.show();
         }
     }

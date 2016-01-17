@@ -1,5 +1,6 @@
 package es.dmoral.tinylist.adapters;
 
+import android.content.Context;
 import android.graphics.Paint;
 import android.os.SystemClock;
 import android.support.v7.widget.CardView;
@@ -10,10 +11,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +26,7 @@ import java.util.ArrayList;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
+import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.Task;
 
 /**
@@ -31,12 +35,15 @@ import es.dmoral.tinylist.models.Task;
 public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHolder> {
 
     private final ArrayList<Task> tasks;
+    /* This is the position of the last added item, which needs to be focused. */
+    private int focusedItem;
+    private Context context;
 
-    public ItemListAdapter() {
+    public ItemListAdapter(Context context) {
         this.tasks = new ArrayList<>();
     }
 
-    public ItemListAdapter(ArrayList<Task> tasks) {
+    public ItemListAdapter(ArrayList<Task> tasks, Context context) {
         this.tasks = tasks;
     }
 
@@ -54,6 +61,14 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         holder.customCheckboxListener.updatePaintFlags(holder.itemDesc);
         holder.cbItem.setChecked(this.tasks.get(position).isChecked());
         holder.itemDesc.setText(this.tasks.get(position).getTask());
+        holder.removeItem.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+               removeItem(position);
+            }
+        });
+        if (this.focusedItem == position)
+            holder.itemDesc.requestFocus();
     }
 
     @Override
@@ -61,28 +76,43 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         return this.tasks.size();
     }
 
+    /**
+     * This method sets the focusedItem (see its description to know more)
+     *
+     * @param position position of the focused item.
+     */
+    public void setFocusedItem(int position) {
+        this.focusedItem = position;
+    }
+
+    /**
+     * Adds a new item to the list.
+     *
+     * @param task item to add
+     */
     public void addItem(Task task) {
         this.tasks.add(task);
         notifyItemInserted(tasks.size() - 1);
     }
 
-    public void addItem(Task task, int position) {
-        this.tasks.add(position, task);
-        notifyItemInserted(position);
-    }
-
+    /**
+     * This method removes an item and notifies their removal and notifies the change of
+     * the views below the removed item.
+     *
+     * @param position position of the item to remove
+     */
     public void removeItem(int position) {
+        TinyListSQLHelper.getSqlHelper(context).deleteTask(this.tasks.get(position).getTask_id());
         this.tasks.remove(position);
         notifyItemRemoved(position);
         notifyItemRangeChanged(position, getItemCount() - position);
     }
 
-    public void replaceWith(ArrayList<Task> newTasks) {
-        this.tasks.clear();
-        this.tasks.addAll(newTasks);
-        notifyDataSetChanged();
-    }
-
+    /**
+     * This method returns all tasks.
+     *
+     * @return tasks.
+     */
     public ArrayList<Task> getTasks() {
         return this.tasks;
     }
@@ -91,6 +121,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         @Bind(R.id.cb_item) CheckBox cbItem;
         @Bind(R.id.item_desc) EditText itemDesc;
+        @Bind(R.id.remove_item) ImageView removeItem;
         public CustomEditTextListener customEditTextListener;
         public CustomCheckboxListener customCheckboxListener;
 
@@ -105,6 +136,9 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         }
     }
 
+    /**
+     * This class is used to maintain updated the Task's ArrayList as the users changes the information.
+     */
     private class CustomEditTextListener implements TextWatcher {
 
         private int position;
@@ -120,8 +154,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            if (position == tasks.size())
-                notifyDataSetChanged();
             tasks.get(position).setTask(s.toString());
         }
 
@@ -131,6 +163,9 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         }
     }
 
+    /**
+     * This class is used to maintain updated the Task's ArrayList as the users changes the information.
+     */
     private class CustomCheckboxListener implements CompoundButton.OnCheckedChangeListener {
 
         private int position;
@@ -146,8 +181,6 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
         @Override
         public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-            /*if (position == tasks.size())
-                notifyDataSetChanged();*/
             tasks.get(position).setIsChecked(isChecked);
 
             if (isChecked)

@@ -4,6 +4,8 @@ import java.io.Serializable;
 
 /**
  * Created by grend on 13/01/2016.
+ *
+ * This class represents every single item/task of a TaskList.
  */
 public class Task implements Serializable {
 
@@ -13,6 +15,14 @@ public class Task implements Serializable {
     private boolean isChecked;
 
     public Task() {
+        this.task_id = -1;
+        this.isChecked = false;
+        this.task_list_id = -1;
+        this.task = "";
+    }
+
+    public Task(int task_list_id) {
+        this.task_list_id = task_list_id;
         this.task_id = -1;
         this.isChecked = false;
         this.task = "";

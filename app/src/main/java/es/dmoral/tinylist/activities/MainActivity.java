@@ -33,7 +33,8 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        // Changing to main theme (avoiding cold start)
+        /* Changing to main theme (avoiding cold start).
+        Thanks to "https://github.com/DreaminginCodeZH/MaterialColdStart" */
         setTheme(R.style.AppTheme_NoActionBar);
 
         super.onCreate(savedInstanceState);
@@ -44,9 +45,14 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Method used to set up the entire view, here we check if the user is adding
+     * a new TaskList or editing an existing one.
+     */
     private void setupView() {
         ButterKnife.bind(this);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setLogo(R.mipmap.ic_launcher);
 
         mViewPager.setAdapter(new SectionsPagerAdapter(getSupportFragmentManager()));
 
@@ -55,6 +61,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void setListeners() {
+        /* FAB handling the main action, adding a new TaskList */
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -75,6 +82,8 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onPageScrollStateChanged(int state) {
+                /* If the user starts scrolling or dragging the ViewPager, the adapters will redraw
+                * themselves in order to show recent changes. */
                 if (state != ViewPager.SCROLL_STATE_IDLE) {
                     SavedListsFragment.getInstance().redrawItems();
                     ArchivedListsFragment.getInstance().redrawItems();
@@ -86,16 +95,13 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
+        // Inflate the menu;
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         switch (id) {
@@ -107,6 +113,9 @@ public class MainActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
+    /**
+     * Just info about the app :-)
+     */
     private void showAboutDialog() {
         new AlertDialog.Builder(this)
                 .setPositiveButton(R.string.accept, null)
@@ -127,8 +136,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public Fragment getItem(int position) {
-            // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
+            /* getItem is called to instantiate the fragment for the given page. */
             switch (position){
                 case 0:
                     return SavedListsFragment.getInstance();
@@ -156,5 +164,6 @@ public class MainActivity extends AppCompatActivity {
             }
             return null;
         }
+
     }
 }

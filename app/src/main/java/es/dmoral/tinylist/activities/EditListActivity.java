@@ -1,15 +1,11 @@
 package es.dmoral.tinylist.activities;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.graphics.Color;
-import android.support.design.widget.CoordinatorLayout;
-import android.support.v4.widget.NestedScrollView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -17,26 +13,19 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
-import android.widget.ScrollView;
-import android.widget.Toast;
 
 import com.larswerkman.lobsterpicker.adapters.BitmapColorAdapter;
 import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
 import es.dmoral.tinylist.adapters.ItemListAdapter;
-import es.dmoral.tinylist.adapters.SavedListsAdapter;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.Task;
 import es.dmoral.tinylist.models.TaskList;
@@ -47,11 +36,10 @@ public class EditListActivity extends AppCompatActivity {
     @Bind(R.id.et_task_list_title) EditText etTaskTitle;
     @Bind(R.id.list_item_recyclerview) RecyclerView listItemRecyclerview;
     @Bind(R.id.add_item) Button addItem;
-    @Bind(R.id.main_container) LinearLayout mainContainer;
 
+    /* Intent to handle edit list action. */
     public static final String INTENT_EDIT = "INTENT_EDIT";
     private int selectedColor;
-    private RecyclerView.Adapter mAdapter;
     private TaskList editingTaskList;
 
     @Override
@@ -59,6 +47,7 @@ public class EditListActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_edit_list);
 
+        /* Getting the TaskList to edit */
         if (getIntent().getExtras() != null) {
             this.editingTaskList = (TaskList) getIntent().getSerializableExtra(INTENT_EDIT);
         }
@@ -67,19 +56,24 @@ public class EditListActivity extends AppCompatActivity {
         setListeners();
     }
 
+    /**
+     * Method used to set up the entire view, here we check if the user is adding
+     * a new TaskList or editing an existing one.
+     */
     private void setupViews() {
         ButterKnife.bind(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setTitle(R.string.new_shopping_list);
 
         this.listItemRecyclerview.setLayoutManager(new LinearLayoutManager(this));
+        RecyclerView.Adapter mAdapter;
         if (this.editingTaskList == null) {
-            this.mAdapter = new ItemListAdapter();
-            this.listItemRecyclerview.setAdapter(this.mAdapter);
+            mAdapter = new ItemListAdapter(this);
+            this.listItemRecyclerview.setAdapter(mAdapter);
             this.selectedColor = Color.parseColor("#FFFFFF");
         } else {
-            this.mAdapter = new ItemListAdapter(editingTaskList.getTasks());
-            this.listItemRecyclerview.setAdapter(this.mAdapter);
+            mAdapter = new ItemListAdapter(editingTaskList.getTasks(), this);
+            this.listItemRecyclerview.setAdapter(mAdapter);
             this.selectedColor = this.editingTaskList.getBackgroundColor();
             this.etTaskTitle.setText(this.editingTaskList.getTitle());
             this.mainLayout.setBackgroundColor(this.selectedColor);
@@ -97,6 +91,7 @@ public class EditListActivity extends AppCompatActivity {
 
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {
+                /* Updating activity title as the user writes TaskList title. */
                 getSupportActionBar().setTitle(s.toString());
             }
 
@@ -109,24 +104,15 @@ public class EditListActivity extends AppCompatActivity {
         this.addItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ((ItemListAdapter) listItemRecyclerview.getAdapter())
-                        .addItem(new Task());
+                /* Adding new task, scrolling and focusing it.*/
+                if (editingTaskList == null)
+                    ((ItemListAdapter) listItemRecyclerview.getAdapter()).addItem(new Task());
+                else
+                    ((ItemListAdapter) listItemRecyclerview.getAdapter()).addItem(new Task(editingTaskList.getTask_list_id()));
                 listItemRecyclerview.scrollToPosition(listItemRecyclerview.getAdapter().getItemCount() - 1);
+                ((ItemListAdapter) listItemRecyclerview.getAdapter()).setFocusedItem(listItemRecyclerview.getAdapter().getItemCount() - 1);
             }
         });
-
-        ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
-            @Override
-            public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
-                return false;
-            }
-
-            @Override
-            public void onSwiped(RecyclerView.ViewHolder viewHolder, int direction) {
-                ((ItemListAdapter) listItemRecyclerview.getAdapter()).removeItem(viewHolder.getAdapterPosition());
-            }
-        };
-        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(listItemRecyclerview);
     }
 
     @Override
@@ -158,6 +144,10 @@ public class EditListActivity extends AppCompatActivity {
         super.onBackPressed();
     }
 
+    /**
+     * When the user touch palette menu icon in order to change background color of the
+     * future CardView.
+     */
     private void handlePaletteAction() {
         final Dialog dialog = new Dialog(this);
         View view = LayoutInflater.from(this).inflate(R.layout.color_picker_layout, null);
@@ -187,6 +177,9 @@ public class EditListActivity extends AppCompatActivity {
         dialog.show();
     }
 
+    /**
+     * Method created to save a new TaskList or editing an existing one.
+     */
     private void saveTaskList() {
         if (this.editingTaskList == null) {
             TinyListSQLHelper.getSqlHelper(this).addOrUpdateTaskList(

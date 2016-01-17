@@ -1,14 +1,13 @@
 package es.dmoral.tinylist.models;
 
-import android.graphics.Color;
-
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Created by grend on 13/01/2016.
+ *
+ * This class represents a Task (or shopping...) List, containing all items/tasks.
  */
 public class TaskList implements Serializable {
 

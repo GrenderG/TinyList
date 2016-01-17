@@ -13,8 +13,11 @@
     <string name="add_item">Add item</string>
     <string name="archive">Archive</string>
     <string name="about">About</string>
-    <string name="app_version">v.1.0.0</string>
-    <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (http://github.com/GrenderG)</string>
+    <string name="app_version" translatable="false">v.1.0.0</string>
+    <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (https://github.com/GrenderG/TinyList).</string>
     <string name="list_archived">List archived</string>
     <string name="undo">UNDO</string>
+    <string name="delete_msg_1">"Are you sure you want to delete "</string>
+    <string name="delete_msg_2">" list?"</string>
+    <string name="delete_title">"Delete "</string>
 </resources>

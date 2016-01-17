@@ -18,4 +18,17 @@
         android:layout_weight="1"
         android:hint="@string/item_description"/>
 
+    <ImageView
+        android:id="@+id/remove_item"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/drawable_remove_item"
+        android:clickable="true"
+        android:paddingTop="2dp"
+        android:paddingBottom="2dp"
+        android:layout_gravity="center_vertical"
+        android:layout_marginEnd="12dp"
+        android:layout_marginStart="12dp"/>
+
 </LinearLayout>
