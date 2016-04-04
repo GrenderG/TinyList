@@ -13,7 +13,7 @@
     <string name="add_item">Add item</string>
     <string name="archive">Archive</string>
     <string name="about">About</string>
-    <string name="app_version" translatable="false">v.1.1.0</string>
+    <string name="app_version" translatable="false">v.1.1.2</string>
     <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (https://github.com/GrenderG/TinyList).</string>
     <string name="list_archived">List archived</string>
     <string name="undo">UNDO</string>
