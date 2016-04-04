@@ -1,15 +1,13 @@
 package es.dmoral.tinylist.activities;
 
-import android.app.Dialog;
 import android.graphics.Color;
+import android.support.annotation.ColorInt;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.helper.ItemTouchHelper;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -17,13 +15,14 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import com.larswerkman.lobsterpicker.adapters.BitmapColorAdapter;
-import com.larswerkman.lobsterpicker.sliders.LobsterShadeSlider;
-
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import es.dmoral.coloromatic.ColorOMaticDialog;
+import es.dmoral.coloromatic.IndicatorMode;
+import es.dmoral.coloromatic.OnColorSelectedListener;
+import es.dmoral.coloromatic.colormode.ColorMode;
 import es.dmoral.tinylist.R;
 import es.dmoral.tinylist.adapters.ItemListAdapter;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
@@ -149,32 +148,20 @@ public class EditListActivity extends AppCompatActivity {
      * future CardView.
      */
     private void handlePaletteAction() {
-        final Dialog dialog = new Dialog(this);
-        View view = LayoutInflater.from(this).inflate(R.layout.color_picker_layout, null);
-        dialog.setContentView(view);
-        dialog.setTitle(R.string.choose_color);
-        dialog.setCancelable(false);
-
-        final LobsterShadeSlider shadeSlider = (LobsterShadeSlider) view.findViewById(R.id.shadeslider);
-        shadeSlider.setColorAdapter(new BitmapColorAdapter(this, R.drawable.color_palette));
-
-        view.findViewById(R.id.cancel).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                dialog.cancel();
-            }
-        });
-
-        view.findViewById(R.id.accept).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                selectedColor = shadeSlider.getColor();
-                mainLayout.setBackgroundColor(selectedColor);
-                dialog.cancel();
-            }
-        });
-
-        dialog.show();
+        new ColorOMaticDialog.Builder()
+                .initialColor(this.selectedColor)
+                .colorMode(ColorMode.ARGB)
+                .onColorSelected(new OnColorSelectedListener() {
+                    @Override
+                    public void onColorSelected(@ColorInt int i) {
+                        selectedColor = i;
+                        mainLayout.setBackgroundColor(selectedColor);
+                    }
+                })
+                .showColorIndicator(true)
+                .indicatorMode(IndicatorMode.HEX)
+                .create()
+                .show(getFragmentManager(), "ColorOMaticDialog");
     }
 
     /**

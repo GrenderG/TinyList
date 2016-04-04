@@ -81,7 +81,7 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
             @Override
             public void onClick(View v) {
                 new AlertDialog.Builder(context)
-                        .setPositiveButton(R.string.accept, new DialogInterface.OnClickListener() {
+                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
                                 SavedListsFragment.getInstance().clearCachedItem();
@@ -89,7 +89,7 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
                                 removeItem(position);
                             }
                         })
-                        .setNegativeButton(R.string.cancel, null)
+                        .setNegativeButton(android.R.string.cancel, null)
                         .setTitle(context.getString(R.string.delete_title) + taskLists.get(position).getTitle())
                         .setMessage(context.getString(R.string.delete_msg_1) + taskLists.get(position).getTitle() + context.getString(R.string.delete_msg_2))
                         .create().show();
