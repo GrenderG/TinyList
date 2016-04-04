@@ -2,6 +2,7 @@ package es.dmoral.tinylist.activities;
 
 import android.graphics.Color;
 import android.support.annotation.ColorInt;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,14 +16,12 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
+import com.thebluealliance.spectrum.SpectrumDialog;
+
 import java.util.Calendar;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import es.dmoral.coloromatic.ColorOMaticDialog;
-import es.dmoral.coloromatic.IndicatorMode;
-import es.dmoral.coloromatic.OnColorSelectedListener;
-import es.dmoral.coloromatic.colormode.ColorMode;
 import es.dmoral.tinylist.R;
 import es.dmoral.tinylist.adapters.ItemListAdapter;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
@@ -148,20 +147,20 @@ public class EditListActivity extends AppCompatActivity {
      * future CardView.
      */
     private void handlePaletteAction() {
-        new ColorOMaticDialog.Builder()
-                .initialColor(this.selectedColor)
-                .colorMode(ColorMode.ARGB)
-                .onColorSelected(new OnColorSelectedListener() {
+        new SpectrumDialog.Builder(this)
+                .setColors(R.array.card_colors)
+                .setSelectedColor(this.selectedColor)
+                .setDismissOnColorSelected(true)
+                .setOnColorSelectedListener(new SpectrumDialog.OnColorSelectedListener() {
                     @Override
-                    public void onColorSelected(@ColorInt int i) {
-                        selectedColor = i;
-                        mainLayout.setBackgroundColor(selectedColor);
+                    public void onColorSelected(boolean positiveResult, @ColorInt int color) {
+                        if (positiveResult) {
+                            selectedColor = color;
+                            mainLayout.setBackgroundColor(selectedColor);
+                        }
+
                     }
-                })
-                .showColorIndicator(true)
-                .indicatorMode(IndicatorMode.HEX)
-                .create()
-                .show(getFragmentManager(), "ColorOMaticDialog");
+                }).build().show(getSupportFragmentManager(), "SpectrumDialog");
     }
 
     /**
