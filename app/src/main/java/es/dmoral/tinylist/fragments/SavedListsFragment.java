@@ -3,7 +3,6 @@ package es.dmoral.tinylist.fragments;
 
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -14,15 +13,16 @@ import android.view.ViewGroup;
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
+import es.dmoral.tinylist.activities.MainActivity;
 import es.dmoral.tinylist.adapters.SavedListsAdapter;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.TaskList;
 import es.dmoral.tinylist.widgets.FABScrollBehavior;
 
-public class SavedListsFragment extends Fragment {
+public class SavedListsFragment extends BaseFragment {
 
-    @Bind(R.id.saved_list_recycler_view) RecyclerView mRecyclerView;
-    private static SavedListsFragment fragmentInstance;
+    @Bind(R.id.saved_list_recycler_view)
+    RecyclerView savedListsRecyclerView;
 
     public SavedListsFragment() {
         // Required empty public constructor
@@ -34,9 +34,7 @@ public class SavedListsFragment extends Fragment {
      * @return an instance of the fragment
      */
     public static SavedListsFragment getInstance() {
-        if (fragmentInstance == null)
-            fragmentInstance = new SavedListsFragment();
-        return fragmentInstance;
+        return new SavedListsFragment();
     }
 
     @Override
@@ -56,17 +54,18 @@ public class SavedListsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupView();
+        setupViews();
     }
 
     /**
      * Method used to set up the entire view, here we check if the user is adding
      * a new TaskList or editing an existing one.
      */
-    private void setupView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    @Override
+    void setupViews() {
+        savedListsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RecyclerView.Adapter mAdapter = new SavedListsAdapter(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(false), getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        savedListsRecyclerView.setAdapter(mAdapter);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.RIGHT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -76,21 +75,22 @@ public class SavedListsFragment extends Fragment {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 /* Archiving the swiped item and showing an Snackbar with "UNDO" option. */
-                final TaskList taskListToArchive = ((SavedListsAdapter) mRecyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
+                final TaskList taskListToArchive = ((SavedListsAdapter) savedListsRecyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
                 taskListToArchive.setIsArchived(true);
                 TinyListSQLHelper.getSqlHelper(getActivity()).addOrUpdateTaskList(taskListToArchive);
-                ((SavedListsAdapter) mRecyclerView.getAdapter()).removeItem(viewHolder.getAdapterPosition());
+                ((SavedListsAdapter) savedListsRecyclerView.getAdapter()).removeItem(viewHolder.getAdapterPosition());
                 undoSnackbar();
             }
         };
-        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(savedListsRecyclerView);
     }
 
     /**
      * Method used to redraw the items inside the main RecyclerView
      */
+    @Override
     public void redrawItems() {
-        ((SavedListsAdapter) mRecyclerView.getAdapter()).replaceWith(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(false));
+        ((SavedListsAdapter) savedListsRecyclerView.getAdapter()).replaceWith(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(false));
     }
 
     /**
@@ -99,23 +99,23 @@ public class SavedListsFragment extends Fragment {
      */
     public void undoSnackbar() {
         Snackbar undoSnackbar = Snackbar
-                .make(this.mRecyclerView, R.string.list_archived, Snackbar.LENGTH_LONG)
+                .make(this.savedListsRecyclerView, R.string.list_archived, Snackbar.LENGTH_LONG)
                 .setAction(R.string.undo, new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        if (((SavedListsAdapter) mRecyclerView.getAdapter()).getCachedItem() != null) {
-                            final TaskList taskListToArchive = ((SavedListsAdapter) mRecyclerView.getAdapter()).getCachedItem();
+                        if (((SavedListsAdapter) savedListsRecyclerView.getAdapter()).getCachedItem() != null) {
+                            final TaskList taskListToArchive = ((SavedListsAdapter) savedListsRecyclerView.getAdapter()).getCachedItem();
                             taskListToArchive.setIsArchived(false);
                             TinyListSQLHelper.getSqlHelper(getActivity()).addOrUpdateTaskList(taskListToArchive);
-                            redrawItems();
-                            ArchivedListsFragment.getInstance().redrawItems();
+                            clearCachedItem();
+                            ((MainActivity) getActivity()).getCurrentVisibleFragment().redrawItems();
                         }
                     }
                 })
                 /* Controlling if the FAB can hide or not to avoid weird behaviours
                 * with its final position after hiding while the Snackbar is still
                 * showing. */
-                .setCallback(new Snackbar.Callback() {
+                .addCallback(new Snackbar.Callback() {
                     public void onShown(Snackbar snackbar) {
                         super.onShown(snackbar);
                         FABScrollBehavior.setCanHideChild(false);
@@ -136,7 +136,7 @@ public class SavedListsFragment extends Fragment {
      * (to prevent the UNDO of that item).
      */
     public void clearCachedItem() {
-        ((SavedListsAdapter) this.mRecyclerView.getAdapter()).setCachedItem(null);
+        ((SavedListsAdapter) this.savedListsRecyclerView.getAdapter()).setCachedItem(null);
     }
 
     @Override

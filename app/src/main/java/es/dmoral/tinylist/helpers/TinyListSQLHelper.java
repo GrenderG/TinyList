@@ -16,15 +16,11 @@ import es.dmoral.tinylist.models.TaskList;
 
 /**
  * Created by grend on 13/01/2016.
- *
+ * <p>
  * This class is a set of useful database actions, threads or AsyncTask are not used
  * because of the small size of the database and small complexity of the operations.
  */
 public class TinyListSQLHelper extends SQLiteOpenHelper {
-
-    private static TinyListSQLHelper sqlHelper = null;
-    @SuppressLint("SimpleDateFormat")
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     private static final String TABLE_NAME_TASK_LISTS = "task_lists";
     private static final String TABLE_NAME_TASKS = "tasks";
@@ -40,6 +36,9 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
             "is_checked INTEGER," + // 0 or 1
             "task_list_id INTEGER," +
             "FOREIGN KEY(task_list_id) REFERENCES task_lists(task_list_id))";
+    private static TinyListSQLHelper sqlHelper = null;
+    @SuppressLint("SimpleDateFormat")
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     /*Avoiding instantiation of this class*/
     private TinyListSQLHelper(Context context) {
@@ -99,7 +98,7 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
      * always have -1 as it's id.
      *
      * @param task Task to add or update
-     * @param db db to use
+     * @param db   db to use
      */
     private void addOrUpdateTask(Task task, SQLiteDatabase db) {
         ContentValues values = new ContentValues();
@@ -138,7 +137,7 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
      * Deletes the desired Task based on the given task_list_id
      *
      * @param task_list_id id of the Task to remove
-     * @param db database to use
+     * @param db           database to use
      */
     private void deleteTask(int task_list_id, SQLiteDatabase db) {
         db.delete(TABLE_NAME_TASKS, "task_list_id = ?",
@@ -199,7 +198,7 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
     private ArrayList<Task> getTasks(int task_list_id) {
         ArrayList<Task> tasks = new ArrayList<>();
         SQLiteDatabase db = sqlHelper.getReadableDatabase();
-        Cursor c = db.query(TABLE_NAME_TASKS, null, "task_list_id = ?", new String[] {String.valueOf(task_list_id)}, null, null, null);
+        Cursor c = db.query(TABLE_NAME_TASKS, null, "task_list_id = ?", new String[]{String.valueOf(task_list_id)}, null, null, null);
 
         while (c.moveToNext()) {
             Task task = new Task();
@@ -217,9 +216,8 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
     /**
      * Returns the desired TaskList
      *
-     * @param db db to use
+     * @param db           db to use
      * @param task_list_id desired TaskList id
-     *
      * @return the desired TaskList
      */
     private TaskList getTaskList(SQLiteDatabase db, int task_list_id) {
@@ -250,7 +248,7 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
      */
     private int getNextUniqueId(SQLiteDatabase db) {
         int nextUniqueId;
-        Cursor c = db.rawQuery("SELECT MAX(task_list_id) FROM "+ TABLE_NAME_TASK_LISTS, null);
+        Cursor c = db.rawQuery("SELECT MAX(task_list_id) FROM " + TABLE_NAME_TASK_LISTS, null);
         c.moveToFirst();
         nextUniqueId = c.getInt(0) + 1;
         c.close();

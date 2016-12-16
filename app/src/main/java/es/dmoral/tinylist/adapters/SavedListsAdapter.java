@@ -3,9 +3,7 @@ package es.dmoral.tinylist.adapters;
 import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
 import android.graphics.Paint;
-import android.graphics.Typeface;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -22,6 +20,7 @@ import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
 import es.dmoral.tinylist.activities.EditListActivity;
+import es.dmoral.tinylist.activities.MainActivity;
 import es.dmoral.tinylist.fragments.SavedListsFragment;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.Task;
@@ -52,11 +51,15 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.cardView.setCardBackgroundColor(taskLists.get(position).getBackgroundColor());
-        holder.taskListTitle.setText(taskLists.get(position).getTitle());
+        holder.cardView.setCardBackgroundColor(taskLists.get(holder.getAdapterPosition()).getBackgroundColor());
+        holder.taskListTitle.setVisibility(View.VISIBLE);
+        if (taskLists.get(holder.getAdapterPosition()).getTitle().isEmpty())
+            holder.taskListTitle.setVisibility(View.GONE);
+        else
+            holder.taskListTitle.setText(taskLists.get(holder.getAdapterPosition()).getTitle());
 
         holder.taskContainer.removeAllViews();
-        for (Task task : taskLists.get(position).getTasks()) {
+        for (Task task : taskLists.get(holder.getAdapterPosition()).getTasks()) {
             TextView taskDescription = new TextView(context);
             taskDescription.setText(task.getTask());
             taskDescription.setTextSize(18f);
@@ -66,23 +69,38 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
             }
             holder.taskContainer.addView(taskDescription);
         }
-        holder.taskListDate.setText(dateFormat.format(taskLists.get(position).getCreationDate()));
+        holder.taskListDate.setText(dateFormat.format(taskLists.get(holder.getAdapterPosition()).getCreationDate()));
         holder.cardView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, EditListActivity.class);
-                intent.putExtra(EditListActivity.INTENT_EDIT, taskLists.get(position));
+                intent.putExtra(EditListActivity.INTENT_EDIT, taskLists.get(holder.getAdapterPosition()));
                 context.startActivity(intent);
             }
         });
         holder.archiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final TaskList taskListToArchive = taskLists.get(position);
+                final TaskList taskListToArchive = taskLists.get(holder.getAdapterPosition());
                 taskListToArchive.setIsArchived(true);
                 TinyListSQLHelper.getSqlHelper(context).addOrUpdateTaskList(taskListToArchive);
-                removeItem(position);
-                SavedListsFragment.getInstance().undoSnackbar();
+                removeItem(holder.getAdapterPosition());
+                ((SavedListsFragment) ((MainActivity) context).getCurrentVisibleFragment()).undoSnackbar();
+            }
+        });
+        holder.shareButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                String shareIntentText = "";
+                Intent shareIntent = new Intent(Intent.ACTION_SEND);
+                shareIntentText += taskLists.get(holder.getAdapterPosition()).getTitle() + "\n\n";
+                for (Task task : taskLists.get(holder.getAdapterPosition()).getTasks()) {
+                    shareIntentText += (task.isChecked() ? Task.DONE_TASK_MARK : Task.UNDONE_TASK_MARK)
+                            + " " + task.getTask() + "\n";
+                }
+                shareIntent.setType("text/plain");
+                shareIntent.putExtra(Intent.EXTRA_TEXT, shareIntentText.trim());
+                context.startActivity(shareIntent);
             }
         });
     }
@@ -146,11 +164,18 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.task_list_title) TextView taskListTitle;
-        @Bind(R.id.task_container) LinearLayout taskContainer;
-        @Bind(R.id.task_list_date) TextView taskListDate;
-        @Bind(R.id.card_view_saved_lists) CardView cardView;
-        @Bind(R.id.archive) ImageView archiveButton;
+        @Bind(R.id.task_list_title)
+        TextView taskListTitle;
+        @Bind(R.id.task_container)
+        LinearLayout taskContainer;
+        @Bind(R.id.task_list_date)
+        TextView taskListDate;
+        @Bind(R.id.card_view_saved_lists)
+        CardView cardView;
+        @Bind(R.id.archive)
+        ImageView archiveButton;
+        @Bind(R.id.share)
+        ImageView shareButton;
 
         public ViewHolder(View itemView) {
             super(itemView);

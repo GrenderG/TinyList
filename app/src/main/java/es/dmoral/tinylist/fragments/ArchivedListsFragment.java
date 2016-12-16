@@ -2,7 +2,6 @@ package es.dmoral.tinylist.fragments;
 
 
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
@@ -17,10 +16,10 @@ import es.dmoral.tinylist.adapters.ArchivedListsAdapter;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.TaskList;
 
-public class ArchivedListsFragment extends Fragment {
+public class ArchivedListsFragment extends BaseFragment {
 
-    @Bind(R.id.archived_list_recycler_view) RecyclerView mRecyclerView;
-    private static ArchivedListsFragment fragmentInstance;
+    @Bind(R.id.archived_list_recycler_view)
+    RecyclerView archivedListsRecyclerView;
 
     public ArchivedListsFragment() {
         // Required empty public constructor
@@ -32,9 +31,7 @@ public class ArchivedListsFragment extends Fragment {
      * @return an instance of the fragment
      */
     public static ArchivedListsFragment getInstance() {
-        if (fragmentInstance == null)
-            fragmentInstance = new ArchivedListsFragment();
-        return fragmentInstance;
+        return new ArchivedListsFragment();
     }
 
     @Override
@@ -54,17 +51,18 @@ public class ArchivedListsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        setupView();
+        setupViews();
     }
 
     /**
      * Method used to set up the entire view, here we check if the user is adding
      * a new TaskList or editing an existing one.
      */
-    private void setupView() {
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+    @Override
+    void setupViews() {
+        archivedListsRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
         RecyclerView.Adapter mAdapter = new ArchivedListsAdapter(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(true), getActivity());
-        mRecyclerView.setAdapter(mAdapter);
+        archivedListsRecyclerView.setAdapter(mAdapter);
         ItemTouchHelper.SimpleCallback simpleItemTouchCallback = new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT) {
             @Override
             public boolean onMove(RecyclerView recyclerView, RecyclerView.ViewHolder viewHolder, RecyclerView.ViewHolder target) {
@@ -74,20 +72,21 @@ public class ArchivedListsFragment extends Fragment {
             @Override
             public void onSwiped(final RecyclerView.ViewHolder viewHolder, int direction) {
                 /* Unarchiving the swiped item. */
-                final TaskList taskListToArchive = ((ArchivedListsAdapter) mRecyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
+                final TaskList taskListToArchive = ((ArchivedListsAdapter) archivedListsRecyclerView.getAdapter()).getItem(viewHolder.getAdapterPosition());
                 taskListToArchive.setIsArchived(false);
                 TinyListSQLHelper.getSqlHelper(getActivity()).addOrUpdateTaskList(taskListToArchive);
-                ((ArchivedListsAdapter) mRecyclerView.getAdapter()).removeItem(viewHolder.getAdapterPosition());
+                ((ArchivedListsAdapter) archivedListsRecyclerView.getAdapter()).removeItem(viewHolder.getAdapterPosition());
             }
         };
-        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(mRecyclerView);
+        new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(archivedListsRecyclerView);
     }
 
     /**
      * Method used to redraw the items inside the main RecyclerView
      */
+    @Override
     public void redrawItems() {
-        ((ArchivedListsAdapter)mRecyclerView.getAdapter()).replaceWith(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(true));
+        ((ArchivedListsAdapter) archivedListsRecyclerView.getAdapter()).replaceWith(TinyListSQLHelper.getSqlHelper(getActivity()).getTaskLists(true));
     }
 
     @Override

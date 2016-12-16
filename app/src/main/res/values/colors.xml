@@ -2,14 +2,9 @@
 <resources>
     <color name="primary">#607D8B</color>
     <color name="primary_dark">#455A64</color>
-    <color name="primary_light">#CFD8DC</color>
     <color name="accent">#FF5722</color>
-    <color name="primary_text">#212121</color>
     <color name="secondary_text">#424242</color>
-    <color name="icons">#FFFFFF</color>
-    <color name="divider">#B6B6B6</color>
     <color name="accent_dark">#D84315</color>
-    <color name="common_dialog_button_color">#009688</color>
     <color name="default_card_color">#FFFFFF</color>
 
     <array name="card_colors">

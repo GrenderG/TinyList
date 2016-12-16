@@ -45,6 +45,7 @@
                 android:id="@+id/task_archived_list_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:textStyle="italic" />
@@ -53,27 +54,31 @@
                 android:id="@+id/unarchive"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/drawable_unarchive_item"
-                android:clickable="true"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"/>
+                android:alpha="0.5"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/ic_unarchive_black_48dp" />
 
             <ImageView
                 android:id="@+id/delete"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
-                android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/drawable_delete_item"
-                android:clickable="true"
-                android:paddingTop="2dp"
-                android:paddingBottom="2dp"
+                android:layout_centerVertical="true"
                 android:layout_marginEnd="12dp"
                 android:layout_marginStart="12dp"
-                android:layout_centerVertical="true"
-                android:layout_toStartOf="@id/unarchive"/>
+                android:layout_toLeftOf="@id/unarchive"
+                android:layout_toStartOf="@id/unarchive"
+                android:alpha="0.5"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/ic_delete_black_48dp" />
 
         </RelativeLayout>
     </RelativeLayout>

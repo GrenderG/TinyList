@@ -1,10 +1,9 @@
 package es.dmoral.tinylist.activities;
 
 import android.graphics.Color;
-import android.support.annotation.ColorInt;
-import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.annotation.ColorInt;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
@@ -30,13 +29,16 @@ import es.dmoral.tinylist.models.TaskList;
 
 public class EditListActivity extends AppCompatActivity {
 
-    @Bind(R.id.main_layout) LinearLayout mainLayout;
-    @Bind(R.id.et_task_list_title) EditText etTaskTitle;
-    @Bind(R.id.list_item_recyclerview) RecyclerView listItemRecyclerview;
-    @Bind(R.id.add_item) Button addItem;
-
     /* Intent to handle edit list action. */
     public static final String INTENT_EDIT = "INTENT_EDIT";
+    @Bind(R.id.main_layout)
+    LinearLayout mainLayout;
+    @Bind(R.id.et_task_list_title)
+    EditText etTaskTitle;
+    @Bind(R.id.list_item_recyclerview)
+    RecyclerView listItemRecyclerview;
+    @Bind(R.id.add_item)
+    Button addItem;
     private int selectedColor;
     private TaskList editingTaskList;
 

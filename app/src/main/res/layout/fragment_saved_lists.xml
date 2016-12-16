@@ -2,8 +2,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:paddingTop="3dp"
     android:paddingBottom="3dp"
+    android:paddingTop="3dp"
     tools:context="es.dmoral.tinylist.fragments.SavedListsFragment">
 
     <android.support.v7.widget.RecyclerView

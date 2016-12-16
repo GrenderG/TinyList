@@ -47,6 +47,7 @@
                 android:id="@+id/task_list_date"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
                 android:layout_alignParentStart="true"
                 android:layout_centerVertical="true"
                 android:textStyle="italic" />
@@ -55,12 +56,30 @@
                 android:id="@+id/archive"
                 android:layout_width="32dp"
                 android:layout_height="32dp"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:alpha="0.5"
                 android:background="?attr/selectableItemBackgroundBorderless"
-                android:src="@drawable/drawable_archive_item"
                 android:clickable="true"
                 android:padding="2dp"
+                android:src="@drawable/ic_archive_black_48dp" />
+
+            <ImageView
+                android:id="@+id/share"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
                 android:layout_centerVertical="true"
-                android:layout_alignParentEnd="true"/>
+                android:layout_marginEnd="12dp"
+                android:layout_marginStart="12dp"
+                android:layout_toLeftOf="@id/archive"
+                android:layout_toStartOf="@id/archive"
+                android:alpha="0.5"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:clickable="true"
+                android:paddingBottom="2dp"
+                android:paddingTop="2dp"
+                android:src="@drawable/ic_share_black_48dp" />
 
         </RelativeLayout>
     </RelativeLayout>

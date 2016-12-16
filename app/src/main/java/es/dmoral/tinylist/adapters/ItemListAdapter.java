@@ -2,24 +2,16 @@ package es.dmoral.tinylist.adapters;
 
 import android.content.Context;
 import android.graphics.Paint;
-import android.os.SystemClock;
-import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 
@@ -64,7 +56,7 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
         holder.removeItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-               removeItem(position);
+                removeItem(position);
             }
         });
         if (this.focusedItem == position)
@@ -119,11 +111,14 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.cb_item) CheckBox cbItem;
-        @Bind(R.id.item_desc) EditText itemDesc;
-        @Bind(R.id.remove_item) ImageView removeItem;
         public CustomEditTextListener customEditTextListener;
         public CustomCheckboxListener customCheckboxListener;
+        @Bind(R.id.cb_item)
+        CheckBox cbItem;
+        @Bind(R.id.item_desc)
+        EditText itemDesc;
+        @Bind(R.id.remove_item)
+        ImageView removeItem;
 
         public ViewHolder(View itemView, CustomEditTextListener customEditTextListener,
                           CustomCheckboxListener customCheckboxListener) {

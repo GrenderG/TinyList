@@ -2,9 +2,8 @@ package es.dmoral.tinylist.adapters;
 
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.graphics.Paint;
-import android.support.v7.app.AlertDialog;
+import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -14,13 +13,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
+
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
 import es.dmoral.tinylist.R;
-import es.dmoral.tinylist.fragments.SavedListsFragment;
 import es.dmoral.tinylist.helpers.TinyListSQLHelper;
 import es.dmoral.tinylist.models.Task;
 import es.dmoral.tinylist.models.TaskList;
@@ -48,8 +49,11 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.cardView.setCardBackgroundColor(taskLists.get(position).getBackgroundColor());
-        holder.taskListTitle.setText(taskLists.get(position).getTitle());
+        holder.cardView.setCardBackgroundColor(taskLists.get(holder.getAdapterPosition()).getBackgroundColor());
+        if (taskLists.get(holder.getAdapterPosition()).getTitle().isEmpty())
+            holder.taskListTitle.setVisibility(View.GONE);
+        else
+            holder.taskListTitle.setText(taskLists.get(holder.getAdapterPosition()).getTitle());
 
         /* Removing existing views (to prevent weird behaviours as the RecyclerView recycle views,
         * and adding Tasks (List items) to the CardView. */
@@ -65,14 +69,14 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
             holder.taskContainer.addView(taskDescription);
         }
 
-        holder.taskListDate.setText(dateFormat.format(taskLists.get(position).getCreationDate()));
+        holder.taskListDate.setText(dateFormat.format(taskLists.get(holder.getAdapterPosition()).getCreationDate()));
         holder.unarchiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final TaskList taskListToArchive = taskLists.get(position);
+                final TaskList taskListToArchive = taskLists.get(holder.getAdapterPosition());
                 taskListToArchive.setIsArchived(false);
                 TinyListSQLHelper.getSqlHelper(context).addOrUpdateTaskList(taskListToArchive);
-                removeItem(position);
+                removeItem(holder.getAdapterPosition());
             }
         });
 
@@ -80,19 +84,19 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                new AlertDialog.Builder(context)
-                        .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
+                new MaterialDialog.Builder(context)
+                        .positiveText(android.R.string.ok)
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                SavedListsFragment.getInstance().clearCachedItem();
-                                TinyListSQLHelper.getSqlHelper(context).deleteTaskList(taskLists.get(position).getTask_list_id());
-                                removeItem(position);
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                TinyListSQLHelper.getSqlHelper(context).deleteTaskList(taskLists.get(holder.getAdapterPosition()).getTask_list_id());
+                                removeItem(holder.getAdapterPosition());
                             }
                         })
-                        .setNegativeButton(android.R.string.cancel, null)
-                        .setTitle(context.getString(R.string.delete_title) + taskLists.get(position).getTitle())
-                        .setMessage(context.getString(R.string.delete_msg_1) + taskLists.get(position).getTitle() + context.getString(R.string.delete_msg_2))
-                        .create().show();
+                        .negativeText(android.R.string.cancel)
+                        .title(context.getString(R.string.delete_title) + taskLists.get(holder.getAdapterPosition()).getTitle())
+                        .content(context.getString(R.string.delete_msg_1) + taskLists.get(holder.getAdapterPosition()).getTitle() + context.getString(R.string.delete_msg_2))
+                        .show();
             }
         });
     }
@@ -141,12 +145,18 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
      */
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        @Bind(R.id.task_archived_list_title) TextView taskListTitle;
-        @Bind(R.id.task_archived_container) LinearLayout taskContainer;
-        @Bind(R.id.task_archived_list_date) TextView taskListDate;
-        @Bind(R.id.card_view_archived_lists) CardView cardView;
-        @Bind(R.id.unarchive) ImageView unarchiveButton;
-        @Bind(R.id.delete) ImageView deleteButton;
+        @Bind(R.id.task_archived_list_title)
+        TextView taskListTitle;
+        @Bind(R.id.task_archived_container)
+        LinearLayout taskContainer;
+        @Bind(R.id.task_archived_list_date)
+        TextView taskListDate;
+        @Bind(R.id.card_view_archived_lists)
+        CardView cardView;
+        @Bind(R.id.unarchive)
+        ImageView unarchiveButton;
+        @Bind(R.id.delete)
+        ImageView deleteButton;
 
         public ViewHolder(View itemView) {
             super(itemView);

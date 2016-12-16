@@ -4,20 +4,19 @@
     <string name="archived_lists">ARCHIVED LISTS</string>
     <string name="done">Done</string>
     <string name="change_background">Change background</string>
-    <string name="accept">ACCEPT</string>
-    <string name="cancel">CANCEL</string>
-    <string name="choose_color">Choose a color</string>
     <string name="list_title">List title</string>
     <string name="new_shopping_list">New list</string>
     <string name="item_description">Item description</string>
     <string name="add_item">Add item</string>
-    <string name="archive">Archive</string>
     <string name="about">About</string>
-    <string name="app_version" translatable="false">v.1.1.2</string>
+    <string name="app_version" translatable="false">v.1.1.3</string>
     <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (https://github.com/GrenderG/TinyList).</string>
     <string name="list_archived">List archived</string>
     <string name="undo">UNDO</string>
     <string name="delete_msg_1">"Are you sure you want to delete "</string>
     <string name="delete_msg_2">" list?"</string>
     <string name="delete_title">"Delete "</string>
+    <string name="action_import">Import list</string>
+    <string name="import_list_hint">Paste the list here</string>
+    <string name="import_list_msg">Here you can paste a list to be imported into the app. Each item must be placed in a new line.</string>
 </resources>

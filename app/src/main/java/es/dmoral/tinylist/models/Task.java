@@ -4,11 +4,13 @@ import java.io.Serializable;
 
 /**
  * Created by grend on 13/01/2016.
- *
+ * <p>
  * This class represents every single item/task of a TaskList.
  */
 public class Task implements Serializable {
 
+    public static final String DONE_TASK_MARK = "[✔]";
+    public static final String UNDONE_TASK_MARK = "[❌]";
     private int task_id;
     private int task_list_id;
     private String task;
