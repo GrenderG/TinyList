@@ -7,6 +7,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -83,6 +84,18 @@ public class SavedListsFragment extends BaseFragment {
             }
         };
         new ItemTouchHelper(simpleItemTouchCallback).attachToRecyclerView(savedListsRecyclerView);
+        registerForContextMenu(savedListsRecyclerView);
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.contextual_delete_menu) {
+            final int position = ((SavedListsAdapter) this.savedListsRecyclerView.getAdapter()).getContextMenuSelectedPosition();
+            TinyListSQLHelper.getSqlHelper(getActivity())
+                    .deleteTaskList(((SavedListsAdapter) this.savedListsRecyclerView.getAdapter()).getItem(position).getTask_list_id());
+            ((SavedListsAdapter) this.savedListsRecyclerView.getAdapter()).removeItem(position);
+        }
+        return super.onContextItemSelected(item);
     }
 
     /**

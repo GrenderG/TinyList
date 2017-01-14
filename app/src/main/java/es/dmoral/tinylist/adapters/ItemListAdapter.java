@@ -32,10 +32,12 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
     private Context context;
 
     public ItemListAdapter(Context context) {
+        this.context = context;
         this.tasks = new ArrayList<>();
     }
 
     public ItemListAdapter(ArrayList<Task> tasks, Context context) {
+        this.context = context;
         this.tasks = tasks;
     }
 
@@ -48,15 +50,15 @@ public class ItemListAdapter extends RecyclerView.Adapter<ItemListAdapter.ViewHo
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
-        holder.customEditTextListener.updatePosition(position);
-        holder.customCheckboxListener.updatePosition(position);
+        holder.customEditTextListener.updatePosition(holder.getAdapterPosition());
+        holder.customCheckboxListener.updatePosition(holder.getAdapterPosition());
         holder.customCheckboxListener.updatePaintFlags(holder.itemDesc);
         holder.cbItem.setChecked(this.tasks.get(position).isChecked());
         holder.itemDesc.setText(this.tasks.get(position).getTask());
         holder.removeItem.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                removeItem(position);
+                removeItem(holder.getAdapterPosition());
             }
         });
         if (this.focusedItem == position)

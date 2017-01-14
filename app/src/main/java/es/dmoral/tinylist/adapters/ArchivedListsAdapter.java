@@ -50,6 +50,7 @@ public class ArchivedListsAdapter extends RecyclerView.Adapter<ArchivedListsAdap
     @Override
     public void onBindViewHolder(final ViewHolder holder, final int position) {
         holder.cardView.setCardBackgroundColor(taskLists.get(holder.getAdapterPosition()).getBackgroundColor());
+        holder.taskListTitle.setVisibility(View.VISIBLE);
         if (taskLists.get(holder.getAdapterPosition()).getTitle().isEmpty())
             holder.taskListTitle.setVisibility(View.GONE);
         else

@@ -38,7 +38,7 @@ public class TinyListSQLHelper extends SQLiteOpenHelper {
             "FOREIGN KEY(task_list_id) REFERENCES task_lists(task_list_id))";
     private static TinyListSQLHelper sqlHelper = null;
     @SuppressLint("SimpleDateFormat")
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy HH:mm:ss");
 
     /*Avoiding instantiation of this class*/
     private TinyListSQLHelper(Context context) {

@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.graphics.Paint;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
+import android.view.Menu;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -37,6 +39,7 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
     private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     /* Cached item to restore (if user wants to), used when an item is removed. */
     private TaskList cachedItem;
+    private int contextMenuSelectedPosition;
 
     public SavedListsAdapter(ArrayList<TaskList> taskLists, Context context) {
         this.taskLists = taskLists;
@@ -78,6 +81,13 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
                 context.startActivity(intent);
             }
         });
+        holder.cardView.setOnLongClickListener(new View.OnLongClickListener() {
+            @Override
+            public boolean onLongClick(View view) {
+                setContextMenuSelectedPosition(holder.getAdapterPosition());
+                return false;
+            }
+        });
         holder.archiveButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,7 +110,7 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
                 }
                 shareIntent.setType("text/plain");
                 shareIntent.putExtra(Intent.EXTRA_TEXT, shareIntentText.trim());
-                context.startActivity(shareIntent);
+                context.startActivity(Intent.createChooser(shareIntent, context.getString(R.string.share_with)));
             }
         });
     }
@@ -162,7 +172,21 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
         this.cachedItem = item;
     }
 
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public int getContextMenuSelectedPosition() {
+        return contextMenuSelectedPosition;
+    }
+
+    public void setContextMenuSelectedPosition(int contextMenuSelectedPosition) {
+        this.contextMenuSelectedPosition = contextMenuSelectedPosition;
+    }
+
+    @Override
+    public void onViewRecycled(ViewHolder holder) {
+        holder.cardView.setOnLongClickListener(null);
+        super.onViewRecycled(holder);
+    }
+
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
 
         @Bind(R.id.task_list_title)
         TextView taskListTitle;
@@ -180,6 +204,12 @@ public class SavedListsAdapter extends RecyclerView.Adapter<SavedListsAdapter.Vi
         public ViewHolder(View itemView) {
             super(itemView);
             ButterKnife.bind(this, itemView);
+            itemView.setOnCreateContextMenuListener(this);
+        }
+
+        @Override
+        public void onCreateContextMenu(ContextMenu contextMenu, View view, ContextMenu.ContextMenuInfo contextMenuInfo) {
+            contextMenu.add(Menu.NONE, R.id.contextual_delete_menu, Menu.NONE, R.string.delete_list_cont_menu);
         }
     }
 

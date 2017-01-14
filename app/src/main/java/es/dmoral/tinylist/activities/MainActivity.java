@@ -110,8 +110,11 @@ public class MainActivity extends AppCompatActivity {
                 /* If the user starts scrolling or dragging the ViewPager, the adapters will redraw
                 * themselves in order to show recent changes. */
                 if (state != ViewPager.SCROLL_STATE_IDLE) {
-                    ((SectionsPagerAdapter) viewPagerContainer.getAdapter())
-                            .getRegisteredFragment(viewPagerContainer.getCurrentItem()).redrawItems();
+                    try {
+                        ((SectionsPagerAdapter) viewPagerContainer.getAdapter())
+                                .getRegisteredFragment(viewPagerContainer.getCurrentItem()).redrawItems();
+                    } catch (NullPointerException ignored) {
+                    }
                     fab.show();
                 }
             }
