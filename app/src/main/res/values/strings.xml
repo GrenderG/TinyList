@@ -9,7 +9,7 @@
     <string name="item_description">Item description</string>
     <string name="add_item">Add item</string>
     <string name="about">About</string>
-    <string name="app_version" translatable="false">v.1.2.0</string>
+    <string name="app_version" translatable="false">v.1.2.1</string>
     <string name="about_msg">TinyList by Daniel Morales (http://dmoral.es). Code is available at GitHub (https://github.com/GrenderG/TinyList).</string>
     <string name="list_archived">List archived</string>
     <string name="undo">UNDO</string>
@@ -19,6 +19,6 @@
     <string name="action_import">Import list</string>
     <string name="import_list_hint">Paste the list here</string>
     <string name="import_list_msg">Here you can paste a list to be imported into the app. Each item must be placed in a new line.</string>
-    <string name="share_with">Share with…</string>
-    <string name="delete_list_cont_menu">Permanently delete</string>
+    <string name="share_with">Share via…</string>
+    <string name="delete_list_cont_menu">Permanently delete list</string>
 </resources>

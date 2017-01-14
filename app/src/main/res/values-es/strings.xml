@@ -18,6 +18,6 @@
     <string name="action_import">Importar lista</string>
     <string name="import_list_hint">Copia la lista aquí</string>
     <string name="import_list_msg">Aquí puedes copiar una lista para ser importada en la aplicación. Cada ítem debe estar en una nueva línea.</string>
-    <string name="share_with">Compartir con…</string>
-    <string name="delete_list_cont_menu">Borrar permanentemente</string>
+    <string name="share_with">Compartir vía…</string>
+    <string name="delete_list_cont_menu">Borrar lista permanentemente</string>
 </resources>
